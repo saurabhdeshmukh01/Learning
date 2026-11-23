@@ -1,50 +1,100 @@
-class NOde:
+# BST using Linked List
+class Node:
     def __init__(self, value):
         self.left = None
         self.data = value
         self.right = None
 
-class Bst:
+class BST:
     def __init__(self):
         self.root = None
-
-    def insert(self, value):
+        self.cnt = 0
+       
+    def insert(self, new_node):
+        self.cnt += 1
         if self.root is None:
-            self.root = NOde(value)
+            self.root = new_node
         else:
-            self._insert_recursively(self.root, value)
+            temp = self.root
+            while True:
+                if new_node.data < temp.data:
+                    if temp.left is None:
+                        temp.left = new_node
+                        return
+                    else:
+                        temp = temp.left
+                else:
+                    if temp.right is None:
+                        temp.right = new_node
+                        return
+                    else:
+                        temp = temp.right
 
-    def _insert_recursively(self, current_node, value):
-        if value < current_node.data:
-            if current_node.left is None:
-                current_node.left = NOde(value)
-            else:
-                self._insert_recursively(current_node.left, value)
-        elif value > current_node.data:
-            if current_node.right is None:
-                current_node.right = NOde(value)
-            else:
-                self._insert_recursively(current_node.right, value)
+    def inorder(self, rt):
+        if rt is None:
+            return
+        else:
+            self.inorder(rt.left)
+            print(rt.data, end=" ")
+            if rt.left is None and rt.right is None:
+                self.lcnt += 1
+            self.inorder(rt.right)
 
-    def inorder_traversal(self):
-        result = []
-        self._inorder_helper(self.root, result)
-        return result
+    def preorder(self, rt):
+        if rt is None:
+            return
+        else:
+            print(rt.data, end=" ")
+            self.preorder(rt.left)
+            self.preorder(rt.right)
 
-    def _inorder_helper(self, node, result):
-        if node is not None:
-            self._inorder_helper(node.left, result)
-            result.append(node.data)
-            self._inorder_helper(node.right, result)
+    def postorder(self, rt):
+        if rt is None:
+            return
+        else:
+            self.postorder(rt.left)
+            self.postorder(rt.right)
+            print(rt.data, end=" ")
 
-btree = Bst()
-btree.insert(10)
-btree.insert(20)
-btree.insert(30)
-btree.insert(17)
-btree.insert(28)
-btree.insert(32)
-btree.insert(23)
-btree.insert(64)
-btree.insert(92)
-print("Inorder Traversal of the Binary search tree:", btree.inorder_traversal())
+    def findminmax(self):
+        if self.root is None:
+            print("\nBST is empty")
+            return
+        temp = self.root
+        while temp.left:
+            temp = temp.left
+        print("\nMin: ", temp.data)
+        temp = self.root
+        while temp.right:
+            temp = temp.right
+        print("Max: ", temp.data)
+
+    def leafnodes(self, rt):
+        if rt is None:
+            return
+        if rt.left is None and rt.right is None:
+            print(rt.data, end=" ")
+        self.leafnodes(rt.left)
+        self.leafnodes(rt.right)
+
+
+b1 = BST()
+b1.insert(Node(100))
+b1.insert(Node(10))
+b1.insert(Node(450))
+b1.insert(Node(0))
+b1.insert(Node(65))
+b1.insert(Node(300))
+b1.insert(Node(4))
+b1.insert(Node(50))
+
+print("\nInorder: ")
+b1.inorder(b1.root)
+print("\nNo of nodes: ", b1.cnt)
+print("\nPreorder: ")
+b1.preorder(b1.root)
+print("\nPostorder: ")
+b1.postorder(b1.root)
+b1.findminmax()
+print("\nLeaf nodes: ")
+b1.leafnodes(b1.root)
