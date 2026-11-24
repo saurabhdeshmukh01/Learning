@@ -1,46 +1,62 @@
-# Q.1 Hospital Emergency Management using Priority Queue
+class Node:
+    def __init__(self, patient_id, name, priority):
+        self.patient_id = patient_id
+        self.name = name
+        self.priority = priority
+        self.next = None
 
-queue = []
+
+head = None
 priority_names = {1: "Critical", 2: "Serious", 3: "Normal"}
 
 
-# 1. Add Patient (enqueue)
 def enqueue(patient_id, name, priority):
+    global head
     if priority not in [1, 2, 3]:
-        print("Invalid priority! Enter 1, 2, or 3.")
+        print("Invalid priority Enter 1, 2, or 3.")
         return
-    queue.append((priority, patient_id, name))
+
+    new_node = Node(patient_id, name, priority)
+
+    if head is None or priority < head.priority:
+        new_node.next = head
+        head = new_node
+    else:
+        temp = head
+        while temp.next is not None and temp.next.priority <= priority:
+            temp = temp.next
+        new_node.next = temp.next
+        temp.next = new_node
+
     print(f"Added: {name} (ID: {patient_id}) - {priority_names[priority]}")
 
 
-# 2. Display the next patient to be treated (display_next)
 def display_next():
-    if not queue:
+    if head is None:
         print("No patients waiting.")
         return
-    sorted_queue = sorted(queue, key=lambda x: x[0])
-    priority, patient_id, name = sorted_queue[0]
-    print(f"\nNext Patient -> ID: {patient_id} | Name: {name} | Condition: {priority_names[priority]}")
+    print(f"\nNext Patient -> ID: {head.patient_id} | Name: {head.name} | Condition: {priority_names[head.priority]}")
 
 
-# 3. Remove a patient from the queue after treatment (dequeue)
 def dequeue():
-    if not queue:
+    global head
+    if head is None:
         print("No patients to treat.")
         return
-    queue.sort(key=lambda x: x[0])
-    priority, patient_id, name = queue.pop(0)
-    print(f"\nTreated & Removed -> ID: {patient_id} | Name: {name} ({priority_names[priority]})")
+    removed = head
+    head = head.next
+    print(f"\nTreated & Removed -> ID: {removed.patient_id} | Name: {removed.name} ({priority_names[removed.priority]})")
 
 
-# 4. Display all waiting patients in priority order (display_all)
 def display_all():
-    if not queue:
+    if head is None:
         print("\nWaiting list is empty.")
         return
     print("\n--- All Waiting Patients ---")
-    for priority, patient_id, name in sorted(queue, key=lambda x: x[0]):
-        print(f"ID: {patient_id} | Name: {name} | Priority: {priority} ({priority_names[priority]})")
+    temp = head
+    while temp is not None:
+        print(f"ID: {temp.patient_id} | Name: {temp.name} | Priority: {temp.priority} ({priority_names[temp.priority]})")
+        temp = temp.next
     print("----------------------------")
 
 
